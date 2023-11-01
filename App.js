@@ -20,27 +20,9 @@ app.use((req, res, next) => {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
-const { managerSchema } = require("./Controllers/Manager.js");
+const { managerSchema } = require("./Controller/Manager.js");
 
 app.post("/api/user/account/signin", async (req, res) => {
-  // const user = await findUser("alfredchrisayo@gmail.com");
-  // if (user.email) {
-  //   re.send(user);
-  // try {
-  //   const authorizedUser = await bcrypt.compare(
-  //     "Ayomide22689$",
-  //     user.password
-  //   );
-  //   if (authorizedUser) res.send(user);
-  //   else res.send("invalid password");
-  // } catch (error) {
-  //   res.send({ error });
-  // }
-  // res.send(
-  //   authorizedUser
-  //     ? `${(user.fullname, "is an authorized user")}`
-  //     : `incorrect password`
-  // );
 });
 
 app.post("/api/signup", async (req, res) => {
