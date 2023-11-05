@@ -55,7 +55,6 @@ async function lendUpdate(title, reader, returnDate) {
   return data;
 }
 
-
 // lend book route
 async function lendBook(req, res) {
   const { title, reader, returnDate } = req.body;
@@ -66,7 +65,6 @@ async function lendBook(req, res) {
     res.send({ error });
   }
 }
-
 
 //  get all books
 async function getAllBooks(req, res) {
@@ -105,10 +103,10 @@ async function findBook(req, res) {
     } else if (author) {
       const data = await getBookByAuthor(author);
       res.send({ data });
-    } else {
+    } else if (isbn) {
       const data = await getBookByIsbn(isbn);
       res.send({ data });
-    }
+    } else res.send({ response: "no keyword recieved" });
   } catch (error) {
     res.send({ error });
   }

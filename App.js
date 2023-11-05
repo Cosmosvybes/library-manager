@@ -31,7 +31,7 @@ const {
 } = require("./Model/Book.js");
 
 const Auth = require("./Middleware/Auth.js");
-const { jwt_ } = require("./utils/jwt.js");
+
 
 app.get("/api/home", Auth, async (req, res) => {
   res.send(req.user.payload);
@@ -49,6 +49,7 @@ app.patch("/api/return/book", Auth, returnBook);
 app.patch("/api/lend/book", Auth, lendBook);
 
 app.post("/api/signup", signup);
+
 app.listen(port, function () {
   console.log(`Server running on ${port}`);
 });
