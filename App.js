@@ -20,7 +20,16 @@ app.use((req, res, next) => {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
-const { managerSchema, signIn } = require("./Controller/Manager.js");
+
+const { signup, authenticateSession } = require("./Controller/Manager.js");
+
+const {
+  findBook,
+  addBook,
+  getAllBooks,
+  returnBook,
+  lendBook,
+} = require("./Model/Book.js");
 
 const Auth = require("./Middleware/Auth.js");
 const { jwt_ } = require("./utils/jwt.js");
@@ -29,35 +38,18 @@ app.get("/api/home", Auth, async (req, res) => {
   res.send(req.user.payload);
 });
 
-app.post("/api/user/account/signin", async (req, res) => {
-  try {
-    const data = await signIn("alfredchrisayo@gmail.com", "ayomide22689$");
+app.post("/api/user/account/signin", authenticateSession);
 
-    if (data.isAuthorized) {
-      const userToken = jwt_(data.user.email);
-      res.cookie("userToken", userToken, { maxAge: 9000000, path: "/api" });
-      res.send({ userToken, data });
-    } else {
-      res.send({ data });
-    }
-  } catch (error) {
-    res.send(error);
-  }
-});
+app.get("/api/all/books", Auth, getAllBooks);
 
-app.post("/api/signup", async (req, res) => {
-  try {
-    const data = await managerSchema(
-      "alfred",
-      "chris",
-      "ayomide22689$",
-      "alfredchrisayo@gmail.com"
-    );
-    res.send(data);
-  } catch (error) {
-    res.json(error);
-  }
-});
+app.get("/api/book/search/", Auth, findBook);
+
+app.get("/api/add/new/book", Auth, addBook);
+
+app.patch("/api/return/book", Auth, returnBook);
+app.patch("/api/lend/book", Auth, lendBook);
+
+app.post("/api/signup", signup);
 app.listen(port, function () {
   console.log(`Server running on ${port}`);
 });

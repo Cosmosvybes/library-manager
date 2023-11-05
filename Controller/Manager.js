@@ -1,19 +1,13 @@
-const { MongoClient } = require("mongodb");
-const { config } = require("dotenv");
+const { libraryManagers } = require("../utils/mongodb.js");
+const { jwt_ } = require("../utils/jwt.js");
 const bcrypt = require("bcrypt");
-// import { MongoClient } from "mongodb";
 // import bcrypt from "bcrypt";
-const client = new MongoClient(
-  "mongodb+srv://cosmos:ayomide22689@cosmoscluster.o6ovlp8.mongodb.net/"
-);
+// const { config } = require("dotenv");
 // import { config } from "dotenv";
-config();
-
-const myLibrary = client.db("easylibrary").collection("managers");
 
 async function managerSchema(firstname, lastname, password, email) {
   const encryptPassword = await bcrypt.hash(password, 10);
-  const user = myLibrary.insertOne({
+  const user = libraryManagers.insertOne({
     firstname: firstname,
     lastname: lastname,
     password: encryptPassword,
@@ -39,18 +33,35 @@ async function signIn(email, password) {
 }
 
 async function getUser(email) {
-  const user = await myLibrary.findOne({ email: email });
+  const user = await libraryManagers.findOne({ email: email });
   return user;
 }
 
-// const newUser = await managerSchema(
-//   "ayomide",
-//   "chris",
-//   "ayomide22689$",
-//   "alfredchrisyo@gmail.com"
-// );
-// console.log(newUser);
-// const user = await signIn("alfredchrisyo@gmail.com", "ayomide22689$");
-// console.log(user);
+async function authenticateSession(req, res) {
+  const { email, password } = req.body;
+  try {
+    const data = await signIn(email, password);
 
-module.exports = { managerSchema, signIn };
+    if (data.isAuthorized) {
+      const userToken = jwt_(data.user.email);
+      res.cookie("userToken", userToken, { maxAge: 9000000, path: "/api" });
+      res.send({ userToken, data });
+    } else {
+      res.send({ data });
+    }
+  } catch (error) {
+    res.send(error);
+  }
+}
+
+const signup = async (req, res) => {
+  const { firstname, lastname, password, email } = req.body;
+  try {
+    const data = await managerSchema(firstname, lastname, password, email);
+    res.send(data);
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+module.exports = { signup, authenticateSession };
