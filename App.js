@@ -51,5 +51,5 @@ app.patch("/api/lend/book", Auth, lendBook);
 app.post("/api/signup", signup);
 
 app.listen(port, function () {
-  console.log(`Server running on ${port}`);
+  console.log(`Server running on on ${port}`);
 });
