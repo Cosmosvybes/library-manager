@@ -35,9 +35,20 @@ const Auth = require("./Middleware/Auth.js");
 
 // app.use(express.static(path.join(__dirname, "dist")));
 app.use(express.static(path.join(__dirname, "dist")));
+
+
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
+app.get("/api/books", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
+
+app.get("/api/catalogue", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
+
+
 
 app.get("/api/home", Auth, async (req, res) => {
   res.send(req.user.payload);
