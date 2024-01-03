@@ -46,6 +46,7 @@ app.get("/api/book/search/", Auth, findBook);
 app.get("/api/add/new/book", Auth, addBook);
 
 app.patch("/api/return/book", Auth, returnBook);
+
 app.patch("/api/lend/book", Auth, lendBook);
 
 app.post("/api/signup", signup);

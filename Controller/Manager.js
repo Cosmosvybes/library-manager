@@ -1,6 +1,7 @@
 const { libraryManagers } = require("../utils/mongodb.js");
 const { jwt_ } = require("../utils/jwt.js");
 const bcrypt = require("bcrypt");
+
 // import bcrypt from "bcrypt";
 // const { config } = require("dotenv");
 // import { config } from "dotenv";
@@ -12,9 +13,13 @@ async function managerSchema(firstname, lastname, password, email) {
     lastname: lastname,
     password: encryptPassword,
     email: email,
+    restricted: false,
+    history: [],
   });
   return user;
 }
+
+
 
 async function signIn(email, password) {
   const user = await getUser(email);
