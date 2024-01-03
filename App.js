@@ -41,11 +41,11 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
-app.get("/api/books", (req, res) => {
+app.get("/books", (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
-app.get("/api/catalogue", (req, res) => {
+app.get("/catalogue", (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
