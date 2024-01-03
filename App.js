@@ -2,6 +2,7 @@ const express = require("express");
 const port = process.env.PORT || 1908;
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const path = require("path");
 const app = express();
 
 app.use((req, res, next) => {
@@ -32,6 +33,11 @@ const {
 
 const Auth = require("./Middleware/Auth.js");
 
+// app.use(express.static(path.join(__dirname, "dist")));
+app.use(express.static(path.join(__dirname, "dist")));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
 
 app.get("/api/home", Auth, async (req, res) => {
   res.send(req.user.payload);
@@ -43,7 +49,7 @@ app.get("/api/all/books", Auth, getAllBooks);
 
 app.get("/api/book/search/", Auth, findBook);
 
-app.get("/api/add/new/book", Auth, addBook);
+app.post("/api/add/new/book", Auth, addBook);
 
 app.patch("/api/return/book", Auth, returnBook);
 

@@ -114,9 +114,10 @@ async function findBook(req, res) {
 }
 
 async function addBook(req, res) {
-  const { title, author, isbn } = req.body;
+  const { title, author, isbn, qty } = req.body;
+  console.log(req.body);
   try {
-    const status = await createBook(title, author, isbn);
+    const status = await createBook(title, author, isbn, qty);
     status.insertedId
       ? res.send({ response: ` new Book ${title} successfull added` })
       : res.send({ response: "book not added yet" });
