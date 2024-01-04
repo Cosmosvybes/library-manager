@@ -91,4 +91,10 @@ const signup = async (req, res) => {
   }
 };
 
-module.exports = { signup, authenticateSession, userProfile, allUsers };
+module.exports = {
+  signup,
+  authenticateSession,
+  userProfile,
+  allUsers,
+  getUser,
+ };

@@ -13,4 +13,5 @@ config();
 
 const libraryManagers = client.db("easylibrary").collection("managers");
 const books = client.db("easylibrary").collection("books");
-module.exports = { libraryManagers, books };
+const borrowers = client.db("easylibrary").collection("borrowers");
+module.exports = { libraryManagers, books, borrowers };

@@ -1,4 +1,5 @@
-const { books } = require("../utils/mongodb.js");
+const { books, borrowers } = require("../utils/mongodb.js");
+const { getUser } = require("../Controller/Manager.js");
 // import { books } from "../utils/mongodb.js";
 
 // add book func
@@ -10,6 +11,7 @@ async function createBook(title, author, isbn, qty, copyrightYear, category) {
     isbn,
     isAvailable: true,
     qty: qty,
+    borrowers: [],
     dateAdded: new Date().toLocaleDateString("en-US", {
       year: "2-digit",
       month: "2-digit",
@@ -34,46 +36,57 @@ async function updateBook(title) {
 
 // return borrowed book
 async function returnBook(req, res) {
-  const { title } = req.body;
+  const { email, title } = req.body;
   try {
-    const data = await updateBook(title);
-    res.send({ data });
+    let book = await getBook(title);
+    let newQty = book.qty + 1;
+    await books.updateOne({ title: title }, { $set: { qty: newQty } });
+    await borrowers.deleteOne({ borrowerEmail: email });
   } catch (error) {
     res.send({ error });
   }
 }
+//get book by title
+const getBook = async (title) => {
+  let bookData = await books.findOne({ title: title });
+  return bookData;
+};
 
 // borrow book
 async function lendUpdate(title, reader, returnDate) {
-  await books.updateOne({ title: title }, { $set: { isAvailable: false } });
-  const data = await books.updateOne(
-    { title: title },
-    {
-      $set: {
-        borrowedBy: {
-          reader,
-          date: new Date().toLocaleString("en-Us", {
-            year: "2-digit",
-            month: "2-digit",
-            day: "2-digit",
-          }),
-          toBeReturnedOn: new Date(returnDate),
-        },
-      },
-    }
-  );
-  return data;
+  let user = await getUser(reader);
+  let book = await getBook(title);
+  return { book, user: user.email };
+  // if (book.qty > 1) {
+  //   let newQty = book.qty - 1;
+  //   await books.updateOne({ title: title }, { $set: { qty: newQty } });
+  //   const data = await borrowers.insertOne({
+  //     title: book.title,
+  //     borrowerEmail: user.email,
+  //     borrowerFirstname: user.firstname,
+  //     date: new Date().toLocaleString("en-US", {
+  //       year: "2-digit",
+  //       month: "2-digit",
+  //       day: "2-digit",
+  //     }),
+  //     returningDate: returnDate,
+  //   });
+  //   return data;
+  // } else {
+  //   await books.updateOne({ title: title }, { $set: { isAvailable: false } });
+  // }
 }
 
 // lend book route
 async function lendBook(req, res) {
   const { title, reader, returnDate } = req.body;
-  try {
-    const data = await lendUpdate(title, reader, returnDate);
-    res.send({ data });
-  } catch (error) {
-    res.send({ error });
-  }
+  console.log(req.body)
+  // try {
+  //   const data = await lendUpdate(title, reader, returnDate);
+  //   res.send({ data });
+  // } catch (error) {
+  //   res.send({ error });
+  // }
 }
 
 //  get all books
@@ -143,12 +156,12 @@ async function addBook(req, res) {
 }
 
 async function deleteBook(title) {
-  let response = await books.deleteOne({title : title });
+  let response = await books.deleteOne({ title: title });
   return response;
 }
 
 async function removeBook(req, res) {
-  const { title} = req.body;
+  const { title } = req.body;
   console.log(title);
   try {
     let data = await deleteBook(title);
