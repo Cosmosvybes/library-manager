@@ -54,7 +54,7 @@ const getBook = async (title) => {
 
 // borrow book
 async function lendUpdate(title, reader, returnDate) {
-  let user = await getUser(reader);
+  // let user = await getUser(reader);
   let book = await getBook(title);
   return { book, user: user.email };
   // if (book.qty > 1) {
@@ -80,13 +80,13 @@ async function lendUpdate(title, reader, returnDate) {
 // lend book route
 async function lendBook(req, res) {
   const { title, reader, returnDate } = req.body;
-  console.log(req.body)
-  // try {
-  //   const data = await lendUpdate(title, reader, returnDate);
-  //   res.send({ data });
-  // } catch (error) {
-  //   res.send({ error });
-  // }
+  
+  try {
+    const data = await lendUpdate(title, reader, returnDate);
+    res.send({ data });
+  } catch (error) {
+    res.send({ error });
+  }
 }
 
 //  get all books
