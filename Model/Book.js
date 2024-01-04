@@ -142,6 +142,22 @@ async function addBook(req, res) {
   }
 }
 
+async function deleteBook(title) {
+  let response = await books.deleteOne({title : title });
+  return response;
+}
+
+async function removeBook(req, res) {
+  const { title} = req.body;
+  console.log(title);
+  try {
+    let data = await deleteBook(title);
+    res.send(data);
+  } catch (error) {
+    res.send(error);
+  }
+}
+
 module.exports = {
   findBook,
   createBook,
@@ -149,4 +165,5 @@ module.exports = {
   getAllBooks,
   addBook,
   lendBook,
+  removeBook,
 };

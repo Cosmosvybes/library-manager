@@ -34,6 +34,7 @@ const {
   getAllBooks,
   returnBook,
   lendBook,
+  removeBook,
 } = require("./Model/Book.js");
 
 const Auth = require("./Middleware/Auth.js");
@@ -64,8 +65,9 @@ app.get("/api/book/search/", Auth, findBook);
 app.post("/api/add/new/book", Auth, addBook);
 
 app.patch("/api/return/book", Auth, returnBook);
-
 app.patch("/api/lend/book", Auth, lendBook);
+
+app.delete("/api/delete", Auth, removeBook);
 
 app.post("/api/signup", signup);
 
