@@ -1,4 +1,4 @@
-const { libraryManagers } = require("../utils/mongodb.js");
+const { libraryManagers, borrowers } = require("../utils/mongodb.js");
 const { jwt_ } = require("../utils/jwt.js");
 const bcrypt = require("bcrypt");
 
@@ -91,9 +91,23 @@ const signup = async (req, res) => {
     res.json(error);
   }
 };
+async function allBorrowers() {
+  let borrowers = borrowers.find({}).toArray();
+  return borrowers;
+}
+
+const getBorrowers = async (req, res) => {
+  try {
+    const data = await allBorrowers();
+    res.send(data);
+  } catch (error) {
+    res.send(error);
+  }
+};
 
 module.exports = {
   signup,
+  getBorrowers,
   authenticateSession,
   userProfile,
   allUsers,

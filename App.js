@@ -68,7 +68,7 @@ app.patch("/api/return/book", Auth, returnBook);
 app.patch("/api/lend/book", Auth, lendBook);
 
 app.delete("/api/delete", Auth, removeBook);
-
+app.get("/api/borrowers", Auth, getBorrowers);
 app.post("/api/signup", signup);
 
 app.listen(port, function () {
