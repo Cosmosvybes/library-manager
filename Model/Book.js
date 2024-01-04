@@ -46,6 +46,7 @@ async function returnBook(req, res) {
     res.send({ error });
   }
 }
+
 //get book by title
 const getBook = async (title) => {
   let bookData = await books.findOne({ title: title });
@@ -56,7 +57,7 @@ const getBook = async (title) => {
 async function lendUpdate(title, reader, returnDate) {
   // let user = await getUser(reader);
   let book = await getBook(title);
-  return { book, user: user.email };
+  return book;
   // if (book.qty > 1) {
   //   let newQty = book.qty - 1;
   //   await books.updateOne({ title: title }, { $set: { qty: newQty } });
@@ -80,7 +81,7 @@ async function lendUpdate(title, reader, returnDate) {
 // lend book route
 async function lendBook(req, res) {
   const { title, reader, returnDate } = req.body;
-  
+
   try {
     const data = await lendUpdate(title, reader, returnDate);
     res.send({ data });
