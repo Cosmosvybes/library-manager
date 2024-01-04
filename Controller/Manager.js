@@ -92,7 +92,7 @@ const signup = async (req, res) => {
   }
 };
 async function allBorrowers() {
-  let users = borrowers.find({}).toArray();
+  let users = await borrowers.find({}).toArray();
   return users;
 }
 
