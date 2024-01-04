@@ -92,8 +92,8 @@ const signup = async (req, res) => {
   }
 };
 async function allBorrowers() {
-  let borrowers = borrowers.find({}).toArray();
-  return borrowers;
+  let users = borrowers.find({}).toArray();
+  return users;
 }
 
 const getBorrowers = async (req, res) => {
