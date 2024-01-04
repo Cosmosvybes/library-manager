@@ -26,6 +26,7 @@ const {
   authenticateSession,
   userProfile,
   allUsers,
+  getBorrowers,
 } = require("./Controller/Manager.js");
 
 const {
