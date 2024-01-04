@@ -15,6 +15,7 @@ async function managerSchema(firstname, lastname, password, email) {
     email: email,
     restricted: false,
     history: [],
+    limit: 0,
   });
   return user;
 }
@@ -97,4 +98,4 @@ module.exports = {
   userProfile,
   allUsers,
   getUser,
- };
+};

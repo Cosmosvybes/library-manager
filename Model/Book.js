@@ -1,4 +1,4 @@
-const { books, borrowers } = require("../utils/mongodb.js");
+const { books, borrowers, libraryManagers } = require("../utils/mongodb.js");
 const { getUser } = require("../Controller/Manager.js");
 // import { books } from "../utils/mongodb.js";
 
@@ -40,6 +40,12 @@ async function returnBook(req, res) {
   try {
     let book = await getBook(title);
     let newQty = book.qty + 1;
+    let user = await getUser(email);
+    let borrowLimit = user.limit - 1;
+    await libraryManagers.updateOne(
+      { email: email },
+      { $set: { limit: borrowLimit } }
+    );
     await books.updateOne({ title: title }, { $set: { qty: newQty } });
     await borrowers.deleteOne({ borrowerEmail: email });
   } catch (error) {
@@ -55,27 +61,35 @@ const getBook = async (title) => {
 
 // borrow book
 async function lendUpdate(title, reader, returnDate) {
-  // let user = await getUser(reader);
+  let user = await getUser(reader);
   let book = await getBook(title);
-  return book;
-  // if (book.qty > 1) {
-  //   let newQty = book.qty - 1;
-  //   await books.updateOne({ title: title }, { $set: { qty: newQty } });
-  //   const data = await borrowers.insertOne({
-  //     title: book.title,
-  //     borrowerEmail: user.email,
-  //     borrowerFirstname: user.firstname,
-  //     date: new Date().toLocaleString("en-US", {
-  //       year: "2-digit",
-  //       month: "2-digit",
-  //       day: "2-digit",
-  //     }),
-  //     returningDate: returnDate,
-  //   });
-  //   return data;
-  // } else {
-  //   await books.updateOne({ title: title }, { $set: { isAvailable: false } });
-  // }
+
+  if (user.limit == 3) return "borrow limit exceeded";
+
+  if (book.qty > 1) {
+    let newQty = book.qty - 1;
+    let borrowLimit = user.limit + 1;
+    await libraryManagers.updateOne(
+      { email: reader },
+      { $set: { limit: borrowLimit } }
+    );
+
+    await books.updateOne({ title: title }, { $set: { qty: newQty } });
+    const data = await borrowers.insertOne({
+      title: book.title,
+      borrowerEmail: user.email,
+      borrowerFirstname: user.firstname,
+      date: new Date().toLocaleString("en-US", {
+        year: "2-digit",
+        month: "2-digit",
+        day: "2-digit",
+      }),
+      returningDate: returnDate,
+    });
+    return data;
+  } else {
+    await books.updateOne({ title: title }, { $set: { isAvailable: false } });
+  }
 }
 
 // lend book route
