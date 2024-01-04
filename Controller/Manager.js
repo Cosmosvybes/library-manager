@@ -39,8 +39,23 @@ async function getUser(email) {
   const user = await libraryManagers.findOne({ email: email });
   return user;
 }
+
+async function getAllUsers() {
+  let allUsers = await libraryManagers.find({}).toArray();
+  return allUsers;
+}
+
+async function allUsers(req, res) {
+  try {
+    const usersData = await getAllUsers();
+    res.send({ usersData });
+  } catch (error) {
+    res.send({ error });
+  }
+}
+
 async function userProfile(req, res) {
-  let email = req.user.payload
+  let email = req.user.payload;
   try {
     const user = await getUser(email);
     res.send({ response: user });
@@ -76,4 +91,4 @@ const signup = async (req, res) => {
   }
 };
 
-module.exports = { signup, authenticateSession, userProfile };
+module.exports = { signup, authenticateSession, userProfile, allUsers };

@@ -25,6 +25,7 @@ const {
   signup,
   authenticateSession,
   userProfile,
+  allUsers,
 } = require("./Controller/Manager.js");
 
 const {
@@ -53,7 +54,7 @@ app.get("/catalogue", (req, res) => {
 });
 
 app.get("/api/home", Auth, userProfile);
-
+app.get("/api/users", Auth, allUsers);
 app.post("/api/user/account/signin", authenticateSession);
 
 app.get("/api/all/books", Auth, getAllBooks);
