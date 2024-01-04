@@ -19,8 +19,6 @@ async function managerSchema(firstname, lastname, password, email) {
   return user;
 }
 
-
-
 async function signIn(email, password) {
   const user = await getUser(email);
   return user
@@ -40,6 +38,15 @@ async function signIn(email, password) {
 async function getUser(email) {
   const user = await libraryManagers.findOne({ email: email });
   return user;
+}
+async function userProfile(req, res) {
+  let email = req.user.payload
+  try {
+    const user = await getUser(email);
+    res.send({ response: user });
+  } catch (error) {
+    res.send({ error });
+  }
 }
 
 async function authenticateSession(req, res) {
@@ -69,4 +76,4 @@ const signup = async (req, res) => {
   }
 };
 
-module.exports = { signup, authenticateSession };
+module.exports = { signup, authenticateSession, userProfile };

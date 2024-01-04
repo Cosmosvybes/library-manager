@@ -21,7 +21,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
 
-const { signup, authenticateSession } = require("./Controller/Manager.js");
+const {
+  signup,
+  authenticateSession,
+  userProfile,
+} = require("./Controller/Manager.js");
 
 const {
   findBook,
@@ -36,7 +40,6 @@ const Auth = require("./Middleware/Auth.js");
 // app.use(express.static(path.join(__dirname, "dist")));
 app.use(express.static(path.join(__dirname, "dist")));
 
-
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
@@ -49,11 +52,7 @@ app.get("/catalogue", (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
-
-
-app.get("/api/home", Auth, async (req, res) => {
-  res.send(req.user.payload);
-});
+app.get("/api/home", Auth, userProfile);
 
 app.post("/api/user/account/signin", authenticateSession);
 

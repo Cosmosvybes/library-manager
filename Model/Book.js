@@ -2,7 +2,7 @@ const { books } = require("../utils/mongodb.js");
 // import { books } from "../utils/mongodb.js";
 
 // add book func
-async function createBook(title, author, isbn, qty) {
+async function createBook(title, author, isbn, qty, copyrightYear, category) {
   if (!(title || author || isbn)) return;
   const status = await books.insertOne({
     title,
@@ -10,6 +10,15 @@ async function createBook(title, author, isbn, qty) {
     isbn,
     isAvailable: true,
     qty: qty,
+    dateAdded: new Date().toLocaleDateString("en-US", {
+      year: "2-digit",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
+    copyrightYear: copyrightYear,
+    category: category,
   });
   return status;
 }
@@ -114,10 +123,17 @@ async function findBook(req, res) {
 }
 
 async function addBook(req, res) {
-  const { title, author, isbn, qty } = req.body;
+  const { title, author, isbn, qty, copyrightYear, category } = req.body;
   console.log(req.body);
   try {
-    const status = await createBook(title, author, isbn, qty);
+    const status = await createBook(
+      title,
+      author,
+      isbn,
+      qty,
+      copyrightYear,
+      category
+    );
     status.insertedId
       ? res.send({ response: ` new Book ${title} successfull added` })
       : res.send({ response: "book not added yet" });
